@@ -66,10 +66,13 @@ export const setWindDirection = dir => dispatch => {
     payload: dir,
   });
 };
-export const setJokeOfDay = joke => dispatch => {
+export const setJokeOfDay = (jokeSetup, jokePunchline) => dispatch => {
   dispatch({
     type: SET_JOKE_OF_THE_DAY,
-    payload: joke,
+    payload: {
+      jokeSetup: jokeSetup,
+      jokePunchline: jokePunchline,
+    },
   });
 };
 export const setFirstName = first => dispatch => {
