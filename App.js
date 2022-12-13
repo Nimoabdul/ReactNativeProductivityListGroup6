@@ -2,8 +2,15 @@ import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {useState, useRef, useEffect} from 'react';
-import {setTasks, removeTask} from "./redux/actions";
-import {useDispatch, useSelector} from "react-redux";
+import {
+  setTasks,
+  removeTask,
+  setJokeOfDay,
+  setFirstName,
+  setLastName,
+  setEmail,
+} from './redux/actions';
+import {useDispatch, useSelector} from 'react-redux';
 
 import {
   StyleSheet,
@@ -17,17 +24,30 @@ import {
   TouchableHighlight,
   Animated,
   Easing,
-  Keyboard,
+  Button,
+  Linking,
+  Image,
 } from 'react-native';
 
 const Stack = createStackNavigator();
 
+const getRandomJoke = e => {
+  fetch('https://official-joke-api.appspot.com/random_joke')
+    .then(response => {
+      return response.json();
+    })
+    .then(data => {
+      setJokeOfDay(JSON.stringify(data.setup), JSON.stringify(data.punchline));
+    })
+    .catch(err => {
+      console.log(err, err.response);
+    });
+};
+
 const HomePage = ({navigation}) => {
-  const [firstName, setfirstName] = useState('');
-  const [lastName, setlastName] = useState('');
-  const [email, setEmail] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [modalVisible2, setModalVisible2] = useState(false);
+  const [modalVisible3, setModalVisible3] = useState(false);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
@@ -104,8 +124,8 @@ const HomePage = ({navigation}) => {
                 onPress={() => {
                   setModalVisible2(false);
                   navigation.navigate("Today's Tasks", {
-                    firstName: {firstName},
-                    lastName: {lastName},
+                    firstName: {setFirstName},
+                    lastName: {setLastName},
                   });
                 }}>
                 <View style={styles.register}>
@@ -150,19 +170,19 @@ const HomePage = ({navigation}) => {
         </Text>
         <TextInput
           style={styles.textinput}
-          value={firstName}
-          onChangeText={setfirstName}
+          value={setFirstName}
+          onChangeText={setFirstName}
           placeholder="First Name"
         />
         <TextInput
           style={styles.textinput}
-          value={lastName}
-          onChangeText={setlastName}
+          value={setLastName}
+          onChangeText={setLastName}
           placeholder="Last Name"
         />
         <TextInput
           style={styles.textinput}
-          value={email}
+          value={setEmail}
           onChangeText={setEmail}
           placeholder="email@gmail.com"
         />
@@ -183,6 +203,102 @@ const HomePage = ({navigation}) => {
               marginTop: 2,
             }}>
             Register
+          </Text>
+        </TouchableOpacity>
+
+        <Text
+          style={{
+            textAlign: 'center',
+            color: '#c7bce1',
+            marginTop: 25,
+          }}>
+          Or continue with
+        </Text>
+
+        <TouchableOpacity
+          style={{
+            marginTop: 20,
+          }}
+          onPress={() => {
+            Linking.openURL('https://www.google.com/');
+          }}>
+          <Text
+            style={{
+              color: '#3f3264',
+              backgroundColor: '#c7bce1',
+              width: 120,
+              height: 35,
+              borderRadius: 100,
+              paddingTop: 5,
+              fontSize: 17,
+            }}>
+            {' '}
+            <Image
+              style={{
+                height: 20,
+                width: 20,
+                paddingTop: 20,
+                alignContent: 'center',
+              }}
+              source={require('./assets/google.png')}
+            />
+            Google
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={{
+            marginTop: -30,
+            marginLeft: 150,
+          }}
+          onPress={() => {
+            Linking.openURL('https://www.facebook.com/');
+          }}>
+          <Text
+            style={{
+              color: '#3f3264',
+              backgroundColor: '#c7bce1',
+              width: 120,
+              height: 35,
+              borderRadius: 100,
+              paddingTop: 5,
+              fontSize: 17,
+            }}>
+            <Image
+              style={{
+                height: 20,
+                width: 20,
+                paddingTop: 20,
+              }}
+              source={require('./assets/facebook.png')}
+            />
+            Facebook
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={{
+            opacity: fadeAnim,
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: 10,
+            marginTop: 20,
+          }}
+          activeOpacity={0.5}
+          title="Contact"
+          color="#c7bce1"
+          onPress={() => {
+            setModalVisible3(true);
+          }}>
+          <Text
+            style={{
+              color: '#c7bce1',
+              fontWeight: 'bold',
+              fontSize: 16,
+              textAlign: 'center',
+              marginTop: 2,
+            }}>
+            Contact Page
           </Text>
         </TouchableOpacity>
       </View>
